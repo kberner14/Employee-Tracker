@@ -39,7 +39,10 @@ SELECT * FROM emploree WHERE first_name;
 
 SELECT role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;
 
-SELECT employee.first_name, employee.last_name, role.title, CONCAT(employee.first_name, ' ', employee.last_name) AS title FROM employee JOIN role ON employee.role_id = role.id;
+SELECT employee.first_name, employee.last_name, role.title, CONCAT(m.first_name, " ", m.last_name) AS manager 
+FROM employee e
+JOIN role 
+ON e.role_id = role.id;
 
 SELECT CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN employee m ON e.manager_id = m.id;
 
