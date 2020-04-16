@@ -37,14 +37,19 @@ SELECT * FROM department;
 SELECT * FROM emploree WHERE first_name;
 
 
-SELECT role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;
+-- This is the command for view departments --
+SELECT department.id, department.name FROM department;
 
-SELECT employee.first_name, employee.last_name, role.title, CONCAT(m.first_name, " ", m.last_name) AS manager 
+-- This is the command for view roles
+SELECT role.id, role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;
+
+-- This is the command for view employees --
+SELECT e.id, e.first_name, e.last_name, role.title, CONCAT(m.first_name, " ", m.last_name) AS manager, role.salary, department.name  
 FROM employee e
 JOIN role 
-ON e.role_id = role.id;
-
-SELECT CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN employee m ON e.manager_id = m.id;
+ON e.role_id = role.id JOIN employee m
+ON e.role_id = m.id JOIN department 
+ON role.department_id = department.id;
 
 
 
