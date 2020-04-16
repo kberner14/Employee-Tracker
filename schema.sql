@@ -1,17 +1,15 @@
-DROP DATABASE IF EXISTS employeeDB;
-CREATE database employeeDB;
+DROP DATABASE IF EXISTS departmentDB;
+CREATE database departmentDB;
 
-USE employeeDB;
+USE departmentDB;
 
-CREATE TABLE employee (
-  id INTEGER AUTO_INCREMENT NOT NULL,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30) NOT NULL,
-  role_id INT NOT NULL,
-  manager_id INTEGER NOT NULL,
-  PRIMARY KEY (id)
-);
-  
+CREATE TABLE department (
+id INT AUTO_INCREMENT NOT NULL,
+name VARCHAR(30) NOT NULL,
+PRIMARY KEY (id)
+ );
+ 
+ 
 DROP DATABASE IF EXISTS roleDB;
 CREATE database roleDB;
 
@@ -24,14 +22,26 @@ CREATE TABLE role (
   department_id INT NOT NULL,
   PRIMARY KEY (id)
 );
+
+
+DROP DATABASE IF EXISTS employeeDB;
+CREATE database employeeDB;
+
+USE employeeDB;
+
+CREATE TABLE employee (
+  id INTEGER AUTO_INCREMENT NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  role_id INT NOT NULL,
+  manager_id INTEGER,
+  PRIMARY KEY (id)
+);
   
-DROP DATABASE IF EXISTS departmentDB;
-CREATE database departmentDB;
 
-USE departmentDB;
+  
 
-CREATE TABLE department (
-  id INT AUTO_INCREMENT NOT NULL,
-  name VARCHAR(30) NOT NULL,
- PRIMARY KEY (id)
- );
+ 
+SELECT * FROM employee;
+SELECT * FROM role;
+SELECT * FROM department;
