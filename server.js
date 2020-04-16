@@ -38,9 +38,9 @@ connection.connect((err) => {
         // based on their answer, either call the bid or the post functions
         if (answer.startChoice === "ADD") {
           return addOption();
-        } else if (answer.postOrBid === "VIEW") {
+        } else if (answer.startChoice === "VIEW") {
           return viewOption();
-        } else if (answer.postOrBid === "UPDATE") {
+        } else if (answer.startChoice === "UPDATE") {
           return updateEmployee();
         } else {
           connection.end();
@@ -62,11 +62,11 @@ connection.connect((err) => {
       })
       .then((answer) => {
         // based on their answer, either call the bid or the post functions
-        if (answer.startChoice === "EMPLOYEE") {
+        if (answer.addChoice === "EMPLOYEE") {
           return addEmployee();
-        } else if (answer.postOrBid === "ROLE") {
+        } else if (answer.addChoice === "ROLE") {
           return addRole();
-        } else if (answer.postOrBid === "DEPARTMENT") {
+        } else if (answer.addChoice === "DEPARTMENT") {
           return addDepartment();
         } else {
           connection.end();
@@ -77,6 +77,68 @@ connection.connect((err) => {
         process.exit(1);
       });
   }
+
+  function addEmployee() {
+       // query the database for all employees
+  return connection.query("SELECT * FROM employee", (err, results) => {
+    if (err) {
+      throw err;
+    }
+    const employeeNames = results.map((row) => row.first_name + " " + row.last_name);
+    // once you have the items, prompt the user for which they'd like to bid on
+    // prompt for info about the item being put up for auction
+    return inquirer
+      .prompt([
+        {
+          name: "first_name",
+          type: "input",
+          message: "What is the employee's first name?",
+        },
+        {
+          name: "last_name",
+          type: "input",
+          message: "What is the employee's first name??",
+        },
+        {
+          name: "role_id",
+          type: "list",
+          message: "Are they a [1. LEAD ENGINEER], [2. SOFTWARE ENGINEER], [3.LEAD SALES ], [4.SALE REPRESENTATIVE ], [5. LEAD LEGAL ADVISOR], [6. LAWYER]?",
+          choices: [1, 2, 3, 4, 5, 6]
+        },
+        {
+            //manager id will be grabbed from answer to does this person have a manager
+            name: "manager_id",
+            type: "list",
+            message: "Who is this person's manager?",
+            choices: employeeNames
+        },
+      ])
+      .then((answer) => {
+        // when finished prompting, insert a new item into the db with that info
+        return connection.query(
+          "INSERT INTO employee SET ?",
+          {
+            first_name: answer.first_name,
+            last_name: answer.last_name,
+            role_id: answer.role_id,
+            manager_id: answer.id,
+          },
+          (err) => {
+            if (err) {
+              throw err;
+            }
+            console.log("Your employee was successfully logged!");
+            // re-prompt the user for if they want to bid or post
+            return start();
+          }
+        );
+      });
+    });
+}
+    
+  
+
+
 
   function viewOption() {
     return inquirer
@@ -105,3 +167,23 @@ connection.connect((err) => {
         process.exit(1);
       });
   }
+
+//   function updateEmployee() {
+//     // query the database for all items being auctioned
+//     return connection.query("SELECT * FROM employee", (err, results) => {
+//       if (err) {
+//         throw err;
+//       }
+//       const employeeNames = (results.map((row) => row.first_name) + results.map((row) => row.last_name));
+//       // once you have the items, prompt the user for which they'd like to bid on
+//       return inquirer
+//         .prompt([
+//             {
+//             name: "updateChoice",
+//             type: "list",
+//             message: "Which employee would you like to update?",
+//             choices: [employeeNames],
+//           }
+//         ])
+//         .then((answer) => {
+//           // get the information of the chosen item
