@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require("console.table")
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -29,18 +30,18 @@ connection.connect((err) => {
   function start() {
     return inquirer
       .prompt({
-        name: "startChoice",
+        name: "start_choice",
         type: "list",
         message: "Would you like to [ADD] a department, role, or employee, [VIEW] current departments, rolls, or employees lists, [UPDATE] a current employee, or [EXIT]?",
         choices: ["ADD", "VIEW", "UPDATE", "EXIT"],
       })
       .then((answer) => {
         // based on their answer, either call the bid or the post functions
-        if (answer.startChoice === "ADD") {
+        if (answer.start_choice === "ADD") {
           return addOption();
-        } else if (answer.startChoice === "VIEW") {
+        } else if (answer.start_choice === "VIEW") {
           return viewOption();
-        } else if (answer.startChoice === "UPDATE") {
+        } else if (answer.start_choice === "UPDATE") {
           return updateEmployee();
         } else {
           connection.end();
@@ -55,18 +56,18 @@ connection.connect((err) => {
   function addOption() {
     return inquirer
       .prompt({
-        name: "addChoice",
+        name: "add_choice",
         type: "list",
         message: "Would you like to add an [EMPLOYEE], a [ROLE], a [DEPARTMENT], or [EXIT]?",
         choices: ["EMPLOYEE", "ROLE", "DEPARTMENT", "EXIT"],
       })
       .then((answer) => {
         // based on their answer, either call the bid or the post functions
-        if (answer.addChoice === "EMPLOYEE") {
+        if (answer.add_choice === "EMPLOYEE") {
           return addEmployee();
-        } else if (answer.addChoice === "ROLE") {
+        } else if (answer.add_choice === "ROLE") {
           return addRole();
-        } else if (answer.addChoice === "DEPARTMENT") {
+        } else if (answer.add_choice === "DEPARTMENT") {
           return addDepartment();
         } else {
           connection.end();
@@ -143,20 +144,20 @@ connection.connect((err) => {
   function viewOption() {
     return inquirer
       .prompt({
-        name: "viewChoice",
+        name: "view_choice",
         type: "list",
         message: "Would you like the list of [EMPLOYEES], [ROLES], [DEPARTMENTS], [ALL]. or [EXIT]?",
         choices: ["EMPLOYEE", "ROLE", "DEPARTMENT", "ALL", "EXIT"],
       })
       .then((answer) => {
         // based on their answer, either call the bid or the post functions
-        if (answer.startChoice === "EMPLOYEES") {
+        if (answer.view_choice === "EMPLOYEES") {
           return viewEmployee();
-        } else if (answer.postOrBid === "ROLES") {
+        } else if (answer.view_choice === "ROLES") {
           return viewRole();
-        } else if (answer.postOrBid === "DEPARTMENTS") {
+        } else if (answer.view_choice === "DEPARTMENTS") {
           return viewDepartment();
-        } else if (answer.postOrBid === "ALL") {
+        } else if (answer.view_choice === "ALL") {
             return viewAll();
         } else {
           connection.end();
@@ -168,22 +169,70 @@ connection.connect((err) => {
       });
   }
 
-//   function updateEmployee() {
-//     // query the database for all items being auctioned
-//     return connection.query("SELECT * FROM employee", (err, results) => {
-//       if (err) {
-//         throw err;
-//       }
-//       const employeeNames = (results.map((row) => row.first_name) + results.map((row) => row.last_name));
-//       // once you have the items, prompt the user for which they'd like to bid on
-//       return inquirer
-//         .prompt([
-//             {
-//             name: "updateChoice",
-//             type: "list",
-//             message: "Which employee would you like to update?",
-//             choices: [employeeNames],
-//           }
-//         ])
-//         .then((answer) => {
-//           // get the information of the chosen item
+
+
+
+
+  function updateEmployee() {
+    // query the database for all items being auctioned
+    return connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) {
+        throw err;
+      }
+      const employeeNames = results.map((row) => row.first_name + " " + row.last_name);
+      // once you have the items, prompt the user for which they'd like to bid on
+      return inquirer
+        .prompt([
+          {
+            name: "update_choice",
+            type: "list",
+            message: "Which employee would you like to update?",
+            choices: [employeeNames],
+          },
+          {
+            name: "first_name",
+            type: "input",
+            message: "What is their first name?",
+          },
+          {
+            name: "last_name",
+            type: "input",
+            message: "What is their last name?",
+          },
+          {
+            name: "role_id",
+            type: "input",
+            message: "What is their first name?",
+          },
+          {
+            name: "manager_id",
+            type: "input",
+            message: "What is their manager's ID?",
+          },
+        ])
+        .then((answer) => {
+           
+            
+            
+            
+            return connection.query(
+              "UPDATE employee SET ?",
+              {
+                first_name: answer.first_name,
+                last_name: answer.last_name,
+                role_id: answer.role_id,
+                manager_id: answer.view_choice,
+              },
+              (err) => {
+                if (err) {
+                  throw err;
+                }
+                console.log("Your employee was successfully logged!");
+                // re-prompt the user for if they want to bid or post
+                return start();
+              }
+            );
+          });
+        });
+    }
+

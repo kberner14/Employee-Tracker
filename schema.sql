@@ -51,9 +51,3 @@ ON e.role_id = role.id JOIN employee m
 ON e.role_id = m.id JOIN department 
 ON role.department_id = department.id;
 
-
-
- JOIN employee
-ON employee.manager_id = employee.id;
-
- CONCAT(employee.first_name, ' ', employee.last_name)
