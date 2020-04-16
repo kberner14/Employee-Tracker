@@ -65,9 +65,37 @@ connection.connect((err) => {
         if (answer.startChoice === "EMPLOYEE") {
           return addEmployee();
         } else if (answer.postOrBid === "ROLE") {
-          return viewRole();
+          return addRole();
         } else if (answer.postOrBid === "DEPARTMENT") {
-          return updateDepartment();
+          return addDepartment();
+        } else {
+          connection.end();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        process.exit(1);
+      });
+  }
+
+  function viewOption() {
+    return inquirer
+      .prompt({
+        name: "viewChoice",
+        type: "list",
+        message: "Would you like the list of [EMPLOYEES], [ROLES], [DEPARTMENTS], [ALL]. or [EXIT]?",
+        choices: ["EMPLOYEE", "ROLE", "DEPARTMENT", "ALL", "EXIT"],
+      })
+      .then((answer) => {
+        // based on their answer, either call the bid or the post functions
+        if (answer.startChoice === "EMPLOYEES") {
+          return viewEmployee();
+        } else if (answer.postOrBid === "ROLES") {
+          return viewRole();
+        } else if (answer.postOrBid === "DEPARTMENTS") {
+          return viewDepartment();
+        } else if (answer.postOrBid === "ALL") {
+            return viewAll();
         } else {
           connection.end();
         }

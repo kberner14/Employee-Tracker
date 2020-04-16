@@ -8,12 +8,6 @@ id INT AUTO_INCREMENT NOT NULL,
 name VARCHAR(30) NOT NULL,
 PRIMARY KEY (id)
  );
- 
- 
-DROP DATABASE IF EXISTS roleDB;
-CREATE database roleDB;
-
-USE roleDB;
 
 CREATE TABLE role (
   id INTEGER AUTO_INCREMENT NOT NULL,
@@ -22,12 +16,6 @@ CREATE TABLE role (
   department_id INT NOT NULL,
   PRIMARY KEY (id)
 );
-
-
-DROP DATABASE IF EXISTS employeeDB;
-CREATE database employeeDB;
-
-USE employeeDB;
 
 CREATE TABLE employee (
   id INTEGER AUTO_INCREMENT NOT NULL,
@@ -45,3 +33,5 @@ CREATE TABLE employee (
 SELECT * FROM employee;
 SELECT * FROM role;
 SELECT * FROM department;
+
+SELECT role.title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id;
